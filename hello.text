@@ -8,3 +8,11 @@
  同时isinstance（）与type的区别，一个含子类，一个不含，同时列表，字典，元祖啥的用isinstance，int类型用type
 重点复习 study_log.py，按“列表 → 单条字典 → 键值对数量 → 主题 → 分钟数”的顺序检查。
  使用try和except尽量捕获明确的异常类型
+ ########第三天，遇到的问题有
+ 对request代码可能不带熟悉
+| `requests.get(url, timeout=秒数) | 发送 GET 请求，得到响应对象 |
+| `response.status_code           | 查看状态码，是整数 |
+| `response.text                  | 获取响应正文，是字符串 |
+| `response.json()                | 把 JSON 正文解析为 Python 数据 |
+| `response.raise_for_status()    | 遇到 HTTP 错误状态时抛出异常 |
+判断是否为 None，推荐使用 is None 或 is not None，而不是 == None 或 != None
