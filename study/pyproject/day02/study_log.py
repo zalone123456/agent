@@ -1,3 +1,6 @@
+import json
+
+
 def add_learnrecord(list1):
     content=input("请输入学习主题：").strip()
     if content=="" :
@@ -56,3 +59,39 @@ def checkstatistics(list1):
     for topic, minutes in topic_totals.items():
         print(f"{topic}：{minutes}分钟")
 
+def save_records(list1,file_path):
+    try:
+        with open(file_path,"w",encoding="utf-8") as f:
+            json.dump(list1,f,ensure_ascii=False,indent=4)
+        print("写入成功")
+    except OSError as e:
+        print(f"保存失败：{e}")
+
+def load_records(file_path):
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            records = json.load(f)
+    except FileNotFoundError:
+        print("暂无历史记录")
+        return []
+    except json.JSONDecodeError:
+        raise ValueError("JSON 文件损坏，请检查文件")
+    except OSError as e:
+        raise OSError(f"读取失败：{e}")
+
+    if not isinstance(records, list):
+        raise ValueError("记录格式错误：最外层必须是列表")
+
+    for record in records:
+        if not isinstance(record, dict) or len(record) != 1:
+            raise ValueError("每条记录必须是只有一个键值对的字典")
+
+        for topic, minutes in record.items():
+            if not isinstance(topic, str) or not topic.strip():
+                raise ValueError("学习主题必须是非空字符串")
+
+            if type(minutes) is not int or minutes <= 0:
+                raise ValueError("分钟数必须是正整数")
+
+    print("读取成功")
+    return records
