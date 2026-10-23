@@ -1,0 +1,14 @@
+# Python 缓存
+__pycache__/
+*.py[cod]
+
+# 本地虚拟环境
+.venv/
+venv/
+
+# PyCharm 本地配置
+.idea/
+
+# 本地环境变量和个人学习记录
+.env
+learning_records.json
