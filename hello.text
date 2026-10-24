@@ -16,3 +16,11 @@
 | `response.json()                | 把 JSON 正文解析为 Python 数据 |
 | `response.raise_for_status()    | 遇到 HTTP 错误状态时抛出异常 |
 判断是否为 None，推荐使用 is None 或 is not None，而不是 == None 或 != None
+ ########第三天，遇到的问题有
+时间函数需要重点复习：time.perf_counter() 用于计时，两次结果相减得到耗时，单位为秒。
+获取当前时间：datetime.now() 返回本机当前日期时间对象。
+时间与字符串转换：dt.strftime(格式) 将日期时间对象转为字符串；datetime.strptime(字符串, 格式) 将字符串转为日期时间对象。
+小数格式 :.2f：用于 f-string，按小数形式显示两位小数，例如 3.14159 显示为 3.14，3 显示为 3.00。.1f、.3f 分别显示一位、三位小数；只改变显示，不修改原数值。
+空值判断：if not api_key: 能识别 None 和空字符串 ""，但纯空格字符串 "   " 仍为真。判断字符串是否只有空白，需要使用 .strip()
+异常信息：except ValueError as e 将异常对象保存到 e，打印 e 可以查看错误消息。except ValueError as e:print(f"转换失败：{e}")
+数据取值：列表即使只有一项，也要用 [0] 取出。列表用索引、字典用键、对象用点号访问属性；空列表不能直接取 [0]。
