@@ -12,3 +12,6 @@ venv/
 # 本地环境变量和个人学习记录
 .env
 learning_records.json
+
+# 本地聊天记录
+chat_history.json

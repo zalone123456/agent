@@ -6,14 +6,7 @@ def save_records(records,file_path):
         json.dump(records,f,ensure_ascii=False,indent=4)
     print('records saved')
     return
-def load_records(file_path):
-    with open(file_path,'r',encoding='utf-8') as f:
-        if records:
-            records = json.load(f)
-            return records
-        else:
-            print('暂无历史记录')
-            return []
+
 def load_records(file_path):
     try:
         with open(file_path, "r", encoding="utf-8") as f:

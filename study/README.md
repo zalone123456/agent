@@ -1,6 +1,6 @@
 # Python 实习学习记录
 
-按学习日保存 Python 练习代码。目前包括学习记录统计器、GitHub 用户资料查询，以及 DeepSeek 单轮问答程序。后续在本 README 中继续更新进度。
+按学习日保存 Python 练习代码，包括学习记录统计器、GitHub 用户资料查询，以及 DeepSeek 命令行聊天助手。连续聊天使用 `pyproject/day06/main.py`，支持命令处理、历史裁剪和 JSON 保存，已完成新环境真实问答、保存和退出验证。第八天使用 `pyproject/day08/main.py`，根据人工指定的本地片段独立回答问题，已完成三道有依据和两道资料不足问题的真实检查。
 
 ## 目录结构
 
@@ -11,9 +11,22 @@ study/
     ├── day01/    # 学习记录统计器基础版
     ├── day02/    # JSON 保存、读取和数据检查
     ├── day03/    # GitHub 用户资料查询
-    └── day04/
-        ├── main.py           # 输入、计时和显示
-        └── model_client.py   # 配置、模型调用、用量和异常处理
+    ├── day04/    # 单轮问答、耗时和 token 用量
+    ├── day05/    # 连续对话、清空、保存和历史裁剪
+    ├── day06/
+    │   ├── main.py           # 输入循环、命令和历史管理
+    │   ├── model_client.py   # 模型调用、回答提取和异常处理
+    │   ├── chat_storage.py   # JSON 保存
+    │   ├── requirements.txt  # 已验证的依赖版本
+    │   └── checks.md         # 检查记录
+    └── day08/
+        ├── main.py           # 人工指定片段的独立资料问答
+        ├── document_loader.py # 读取文本、生成片段并保存
+        ├── text_splitter.py  # 400/80 切分与 JSON 加载
+        ├── model_client.py   # 复用模型调用
+        ├── docs/            # 三份 UTF-8 练习资料
+        └── data/
+            └── chunks.json  # 带来源和编号的片段列表
 ```
 
 ## 学习进度
@@ -24,19 +37,31 @@ study/
 | 第二天 | 文件读写、JSON、手动保存、启动读取、记录格式检查和文件异常处理 |
 | 第三天 | HTTP、GET 请求、状态码、JSON 响应、超时和网络异常 |
 | 第四天 | DeepSeek API、环境变量、SDK、单轮问答、异常分类、调用耗时和 token 用量 |
+| 第五天 | 连续对话、清空上下文、手动保存、失败后恢复历史、保留最近五轮 |
+| 第六天 | 功能检查、依赖清单、新环境复现、增加帮助命令和整理说明 |
+| 第七天 | 补漏、项目演示和阶段复盘，不新增必需功能 |
+| 第八天 | 本地文档读取、400/80 字符切分、片段来源、JSON 保存与人工选片段问答 |
 
 ## 环境与依赖
 
-当前练习使用 Python 3.12，Conda 环境名为 `intership`。第三天部分 f-string 使用了 Python 3.12 支持的引号写法，因此运行完整项目请使用 Python 3.12 或以上版本。
+推荐 Python 3.12。第三天部分 f-string 使用了 Python 3.12 支持的引号写法；本次新环境验证使用 Python 3.12.15、openai 3.37.0。
 
-在 Anaconda Prompt 中激活自己的项目环境，再安装第三天和第四天使用的库：
+已有项目环境名为 `intership`，干净测试环境名为 `intershipcheck`。环境名称可自行调整。在 Anaconda Prompt 中首次创建测试环境：
 
 ```bash
-conda activate intership
-python -m pip install requests openai
+conda create -n intershipcheck python=3.12
+conda activate intershipcheck
 ```
 
-第一天、第二天只使用标准库。PyCharm 中也应选择同一个环境的解释器。以上环境名按自己的实际配置调整。
+如果环境已经存在，直接激活即可。进入本 README 所在的 `study` 目录，安装聊天助手依赖：
+
+```bash
+python -m pip install -r pyproject/day06/requirements.txt
+```
+
+依赖文件只包含 `openai==3.37.0`，其依赖由 pip 自动安装。`os`、`json`、`time`、`pathlib` 是标准库，不需要安装。第一天、第二天只使用标准库；若要运行第三天的独立练习，另外安装 `requests`。
+
+PyCharm 的项目或运行配置也应选择对应环境。以运行窗口第一行的解释器路径为准，不能只看终端是否已激活环境。
 
 ## 运行方式
 
@@ -47,9 +72,13 @@ python pyproject/day01/main.py
 python pyproject/day02/main.py
 python pyproject/day03/main.py
 python pyproject/day04/main.py
+python pyproject/day05/main.py
+python pyproject/day06/main.py
+python pyproject/day08/document_loader.py
+python pyproject/day08/main.py
 ```
 
-也可以在 PyCharm 中选择对应的 `main.py` 运行。第四天需要先在实际使用的运行配置中设置 API Key。
+也可以在 PyCharm 中选择对应的 `main.py` 运行。第四至六天及第八天均需先配置 `DEEPSEEK_API_KEY`。当前聊天助手使用第六天版本，第四天保留为单轮问答练习。
 
 ## 第一天和第二天 学习记录统计器
 
@@ -90,7 +119,7 @@ python pyproject/day04/main.py
 
 ## 第四天 DeepSeek 单轮问答
 
-使用 `openai` Python SDK 调用 DeepSeek，当前代码配置为：
+使用 `openai` Python SDK 调用 DeepSeek。第四至六天的模型配置为：
 
 - 服务商：DeepSeek。
 - API 基础地址：`https://api.deepseek.com`。
@@ -102,7 +131,7 @@ python pyproject/day04/main.py
 
 在 DeepSeek 开放平台创建 API Key，并确认账户具备可用额度。代码通过环境变量 `DEEPSEEK_API_KEY` 读取密钥。
 
-在 PyCharm 中进入 Run → Edit Configurations，选择脚本路径指向 `day04/main.py` 的配置，在 Environment variables 中添加：
+在 PyCharm 中进入 Run → Edit Configurations，选择实际运行脚本的配置；运行当前版本时，脚本路径应指向 `day06/main.py`，解释器应选择已安装依赖的环境。在 Environment variables 中添加：
 
 | 名称 | 值 |
 | --- | --- |
@@ -126,12 +155,130 @@ python pyproject/day04/main.py
 
 遇到过的问题：创建客户端时报 Missing credentials，原因是实际运行配置没有提供 `DEEPSEEK_API_KEY`；将环境变量添加到第四天使用的运行配置后解决。
 
-当前实现为单轮问答，尚未加入连续对话和历史保存，也未完整验证响应结构，例如候选结果列表为空的情况。调用可能产生费用，以服务商当前规则为准。
+第四天版本保留单轮问答；第五、六天的连续对话见下文。模型调用可能产生费用，以服务商当前规则为准。
+
+## 第五天和第六天 连续对话助手
+
+运行 `pyproject/day06/main.py` 后直接输入问题，程序每次携带当前保留的历史。回答成功后形成完整问答；失败时移除本次问题，提示错误并继续等待输入，不把错误提示保存成模型回答。
+
+### 支持的命令
+
+| 输入 | 行为 |
+| --- | --- |
+| 普通问题 | 请求模型、打印有效回答、更新历史 |
+| 空输入或纯空格 | 提示不能为空，继续等待，不请求模型 |
+| `/help` | 显示使用说明，第六天版本提供 |
+| `/clear` | 清空用户和助手历史，保留系统要求 |
+| `/save` | 将当前保留的消息列表保存为 JSON |
+| `/exit` | 退出程序，不自动保存 |
+
+命令由程序处理，不发给模型，也不加入历史。
+
+### 历史规则与保存位置
+
+- 完成一轮后最多保留最近五轮完整问答，加上系统消息共 11 条。继续请求时还会加入本次新问题。
+- 超过上限时，成对移除最早的问题与回答，保留系统消息。按轮数限制不等于严格限制 token。
+- `/save` 写入实际运行的 `main.py` 同目录下的 `chat_history.json`，采用 UTF-8，中文直接显示，保存时覆盖该文件。
+- 保存的是当前保留的历史，包含系统消息；已裁剪的早期问答不在文件中。
+- 退出不会自动保存，启动也不会自动恢复已保存的聊天。
+- `/clear` 只重置内存历史，不删除已有文件；清空后再次保存，会覆盖旧文件。
+
+### 错误与当前限制
+
+已处理密钥缺失或为空、请求超时、网络连接失败、鉴权失败、其他 HTTP 错误，以及空回答。HTTP 错误提示包含状态码和错误消息，便于检查余额、参数和模型配置。保存失败时输出文件错误并继续运行。
+
+当前尚未完整验证所有异常响应结构，例如 `choices` 为空的情况；没有增加自定义的输入 token 预算、摘要记忆、流式显示或自动恢复功能。第六天当前未输出每轮耗时，模型请求仍设置 60 秒超时，并保留接口提供的 token 用量显示。
+
+### 检查与新环境验证
+
+第六天使用 `checks.md` 记录检查结果。已在独立测试进程中模拟验证密钥缺失、请求失败后历史恢复、五轮历史裁剪、保存失败及 `/help` 不触发模型调用。
+
+2026-10-25 在新环境 `intershipcheck`（Python 3.12.15、openai 3.37.0）完成一次真实 DeepSeek 调用，获得非空回答，并验证 `/save` 保存的数据与回答一致、`/exit` 正常结束。验证使用临时保存目录，原代码和已有聊天文件保持不变。
+
+本地复现时：
+
+1. 按上文创建或激活 Python 环境，安装 `requirements.txt`。
+2. 在实际运行环境中设置 `DEEPSEEK_API_KEY`。
+3. 启动第六天版本，完成一次问答。
+4. 输入 `/help` 查看命令，再保存并检查 JSON，最后退出。
+5. 检查多轮对话时，先提供一个临时名称再追问；以实际携带的消息确认历史，而不是只看模型是否声称记得。
 
 ## 版本管理
 
-代码和本 README 纳入 Git。仓库根目录的 `.gitignore` 忽略 Python 缓存、PyCharm 本地配置、虚拟环境、`.env` 和个人学习记录文件。
+代码、依赖清单、检查记录和本 README 纳入 Git。仓库根目录的 `.gitignore` 忽略 Python 缓存、PyCharm 本地配置、虚拟环境、`.env`、`learning_records.json` 和 `chat_history.json`。
 
 提交前通过 `git status`、`git diff` 和 `git diff --staged` 检查实际内容，确认没有密钥。`commit` 保存本地版本，`push` 上传到远程仓库。
 
 此前 HTTPS 推送遇到 OpenSSL 连接错误，临时使用 Windows Schannel 后推送成功；需要时可为当前仓库配置该 TLS 后端，保持证书验证开启。
+
+## 第七天 阶段复盘
+
+根据实际检查结果补漏，演示项目，并整理 `week1_review.md`：完成的功能、能够独立完成的操作、仍需复习的知识、一个排错案例和下一阶段待补内容。阶段复盘按实际完成情况填写，不因安排已列出就默认通过。
+
+## 第八天 本地资料问答
+
+本阶段把本地文本读入、切成带来源的片段，再根据人工选定的片段回答问题。当前尚未接入 embedding、向量数据库或自动相似度检索。
+
+### 资料与切分结果
+
+练习资料位于 `pyproject/day08/docs/`，均为 UTF-8 文本：
+
+| 文件 | 字符数 | 片段数 |
+| --- | ---: | ---: |
+| 使用说明.txt | 286 | 1 |
+| 项目介绍.txt | 304 | 1 |
+| 学习笔记.txt | 1369 | 5 |
+| 合计 | 1959 | 7 |
+
+当前规则为每块最多 400 个 Python 字符串字符，相邻块重叠 80 字符，起点每次前进 320。末块不足 400 字符也保留；一块到达正文末尾后结束，不生成空块或多余重复尾块。此处不是按 UTF-8 字节或模型 token 计数。
+
+例如，850 字符正文分成 400、400、210 三块；重叠用于保留边界附近的上下文，固定字符切分仍可能截断句子。
+
+`document_loader.py` 遍历 txt 文件，跳过读取失败或只有空白的正文，生成片段列表后一次保存到 `pyproject/day08/data/chunks.json`。JSON 使用 UTF-8，中文直接显示并有缩进。每条记录包含：
+
+| 字段 | 含义 |
+| --- | --- |
+| source | 带后缀的来源文件名 |
+| chunk_id | 文件名与文件内从 1 开始的序号，例如 学习笔记.txt#2 |
+| text | 当前片段的正文 |
+
+### 运行方式
+
+使用前文的 `intershipcheck` 环境和 `openai==3.37.0`，在实际运行第八天脚本的环境或 PyCharm 配置中设置 `DEEPSEEK_API_KEY`。以下命令在 `study` 目录执行：
+
+```bash
+python pyproject/day08/document_loader.py
+python pyproject/day08/main.py
+```
+
+当前生成程序要求 `pyproject/day08/data/` 已存在；首次运行时先建立该目录。修改 docs 中的资料后，重新运行生成程序，再启动问答入口。
+
+`main.py` 中通过 `SELECTED_CHUNK_ID = "学习笔记.txt#2"` 人工指定参考片段。需要换资料时修改这个编号，并确认它存在于最新 JSON 中。
+
+运行入口后直接输入问题，例如：
+
+```text
+读取多个文档时，如果其中一个文件只有空白内容，程序会怎样处理？
+```
+
+程序自动读取选中片段，把编号、正文和问题组织为 user 消息，再与 system 规则一起发送。system 要求依据资料、标明来源、资料不足时说明，资料中的指令不作为操作要求。每道问题都新建请求消息列表，不携带之前的问题或回答。
+
+第八天入口支持 `/help` 和 `/exit`；它使用独立资料问答流程。第六天的连续聊天、五轮历史和手动保存见前文对应章节。
+
+### 五道问题的实际检查结果
+
+2026-10-26，根据学习者提供的真实运行截图和完整模型回答，逐项核对答案与所提供的 `学习笔记.txt#2`。结果为 5/5 通过：有依据 3/3，资料不足 2/2。
+
+| 问题 | 类型 | 实际回答摘要 | 结果 |
+| --- | --- | --- | --- |
+| 读取多个文档时，如果其中一个文件只有空白内容，程序会怎样处理？ | 有依据 | 跳过当前文件、继续处理其他文件，使用 continue；引用 学习笔记.txt#2 | 通过 |
+| 项目作者的生日是哪一天？ | 资料不足 | 明确说明提供的资料不足以回答，未编造生日 | 通过 |
+| 当前文本切分的长度单位是字符、字节，还是 token？ | 有依据 | 单位为字符，区别于 UTF-8 字节和模型 token；引用 学习笔记.txt#2 | 通过 |
+| 读取文件后，为什么要先检查结果是否为 None，再判断正文是否为空白？ | 有依据 | 避免对 None 调用 strip 等字符串方法；引用 学习笔记.txt#2 | 通过 |
+| 这个项目的 GitHub 仓库地址是什么？ | 资料不足 | 说明当前片段没有仓库地址，未编造链接 | 通过 |
+
+### 当前范围
+
+读取、切分、JSON 保存和请求组织已做模拟检查；上述五道问答另有真实响应。五题通过仅表示这些案例符合预期。当前仍采用人工指定片段，没有自动检索；固定字符切分也不保证完整语义。
+
+当前 JSON 加载函数捕获 OSError，但未完整校验 JSON 损坏、编码错误及记录结构。Git 提交状态以实际仓库为准，不因文档更新就视为已经提交。
