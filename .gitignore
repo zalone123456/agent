@@ -15,3 +15,6 @@ learning_records.json
 
 # 本地聊天记录
 chat_history.json
+
+# 本地向量索引，可由文档重新生成
+chroma_db/

@@ -1,5 +1,4 @@
 import json
-from email import message
 from pathlib import Path
 import text_splitter
 def load(path):

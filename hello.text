@@ -2,12 +2,16 @@
 1.去空白字符串   str.strip()
 2.列表中的字典不知道怎么表达  .items()，同时建立字典也不太会
 3.return 的使用方法有问题
+
+
 #########第二天，遇到的问题有
 字典长度：len() 统计键值对数量。len({}) 为 0，len({"Python": 45}) 为 1，两组键值对则为 2。
 字符串真假判断：空字符串 "" 为假，非空字符串为真，并不是字符串本身等于 0 或 1。空格也算字符，因此判断空主题要用 not topic.strip()。
  同时isinstance（）与type的区别，一个含子类，一个不含，同时列表，字典，元祖啥的用isinstance，int类型用type
 重点复习 study_log.py，按“列表 → 单条字典 → 键值对数量 → 主题 → 分钟数”的顺序检查。
  使用try和except尽量捕获明确的异常类型
+
+
  ########第三天，遇到的问题有
  对request代码可能不带熟悉
 | `requests.get(url, timeout=秒数) | 发送 GET 请求，得到响应对象 |
@@ -16,6 +20,8 @@
 | `response.json()                | 把 JSON 正文解析为 Python 数据 |
 | `response.raise_for_status()    | 遇到 HTTP 错误状态时抛出异常 |
 判断是否为 None，推荐使用 is None 或 is not None，而不是 == None 或 != None
+
+
  ########第四天，遇到的问题有
 时间函数需要重点复习：time.perf_counter() 用于计时，两次结果相减得到耗时，单位为秒。
 获取当前时间：datetime.now() 返回本机当前日期时间对象。
@@ -24,15 +30,46 @@
 空值判断：if not api_key: 能识别 None 和空字符串 ""，但纯空格字符串 "   " 仍为真。判断字符串是否只有空白，需要使用 .strip()
 异常信息：except ValueError as e 将异常对象保存到 e，打印 e 可以查看错误消息。except ValueError as e:print(f"转换失败：{e}")
 数据取值：列表即使只有一项，也要用 [0] 取出。列表用索引、字典用键、对象用点号访问属性；空列表不能直接取 [0]。
+
+
  ########第五天，遇到的问题有
 return	立即结束当前函数；即使在循环里，也会退出整个函数
 break	退出当前这一层循环，继续执行循环后面的代码
 continue	跳过本轮剩余代码，进入下一轮循环
 确定文件路径：先 from pathlib import Path。Path(__file__).resolve().parent 获取当前 Python 文件所在文件夹，再用 / "chat_history.json" 拼接文件名。这一步只确定路径，不创建文件。
+
+
  ########第六天，遇到的问题有
 删除元素后，列表索引会变化：删除 messages[1] 后，原位置 2 的元素会移动到位置 1。因此，要连续删除原位置 1 和 2 的两个相邻元素，可以连续执行两次 del messages[1]。
+
+
  ########第八天，遇到的问题有
- Path 用法：目录判断、文件遍历，以及文件名等属性。
+ Path 用法：目录判断、文件遍历，以及文件名等属性。重点包括 glob、name、stem、suffix、parent，以及 is_dir 与 exists 的区别。
 字符串与切片：strip、split，以及每块 400 字符、重叠 80 字符的实现。
 主程序流程：认真读懂“读取 JSON → 选择片段 → 拼接消息 → 调用模型”的过程。
 提问方式：理解 system 和 user 的作用，学会把规则、参考资料、来源编号和问题一起交给模型，并核对回答依据。
+
+
+ ########第九天，遇到的问题有
+`path.glob("*.txt")`：查找当前目录下的 `.txt` 文件。`path.glob("**/*.txt")`：递归查找当前目录及其子目录下的 `.txt` 文件。
+`Path.glob()` 返回可遍历的生成器，不是单个文件路径。遍历它时，每次得到一个 `Path` 对象，才可以使用 `.name` 或传给读取函数。同时要加入sorted.进行排序
+- `append(x)`：把 `x` 整体作为一个元素加入列表。
+- `extend(iterable)`：遍历参数，把其中的元素逐个加入列表。- `append([3, 4])` 后为 `[1, 2, [3, 4]]`。extend([3, 4])` 后为 `[1, 2, 3, 4]`。
+| 写法                             | 结果              | 类型        |
+| -------------------------------- | ----------------- | ----------- |
+| `i.name`                         | `笔记.txt`        | 字符串      |
+| `i.relative_to(path)`            | `Python\笔记.txt` | `Path` 对象 |
+| `i.relative_to(path).as_posix()` | `Python/笔记.txt` | 字符串      |
+- `relative_to(path)`：取得相对于指定目录的路径，保留子文件夹信息。
+- `as_posix()`：用 `/` 表示路径分隔符，并返回字符串，便于拼接编号、保存 JSON。
+保存前创建目录：`path_save.parent.mkdir(parents=True, exist_ok=True)`：确保保存文件的目录存在，没有就创建。
+- `path_save.parent`：取得文件所在的 `day09/data` 目录。
+- `mkdir()`：创建目录。
+- `parents=True`：需要时一起创建缺失的上级目录。
+- `exist_ok=True`：目录已经存在时正常继续，不因目录已存在而报错。
+- 这行只创建目录，不创建 `chunks.json`；后续保存函数负责创建或覆盖文件、写入数据。
+执行顺序：确定文件路径 → 确保目录存在 → 保存 JSON。
+
+ ########第十天，遇到的问题有
+ sorted 的 key 函数如何运行？
+ raise_for_status 检查 HTTP 状态 `response.raise_for_status()` 根据 HTTP 状态码检查错误：4xx、5xx 会抛出

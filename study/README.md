@@ -2,6 +2,8 @@
 
 按学习日保存 Python 练习代码，包括学习记录统计器、GitHub 用户资料查询，以及 DeepSeek 命令行聊天助手。连续聊天使用 `pyproject/day06/main.py`，支持命令处理、历史裁剪和 JSON 保存，已完成新环境真实问答、保存和退出验证。第八天使用 `pyproject/day08/main.py`，根据人工指定的本地片段独立回答问题，已完成三道有依据和两道资料不足问题的真实检查。
 
+第九天使用 `pyproject/day09/document_loader.py` 批量整理文档，合并短段落、切分长段落并记录原文位置，结果保存到 `pyproject/day09/data/chunks.json`。评估题位于 `pyproject/day09/evaluation/questions.json`，题型统计使用 `pyproject/day09/check_questions.py`。第九天脚本只使用标准库，无需 API 密钥。
+
 ## 目录结构
 
 ```text
@@ -19,14 +21,25 @@ study/
     │   ├── chat_storage.py   # JSON 保存
     │   ├── requirements.txt  # 已验证的依赖版本
     │   └── checks.md         # 检查记录
-    └── day08/
-        ├── main.py           # 人工指定片段的独立资料问答
-        ├── document_loader.py # 读取文本、生成片段并保存
-        ├── text_splitter.py  # 400/80 切分与 JSON 加载
-        ├── model_client.py   # 复用模型调用
-        ├── docs/            # 三份 UTF-8 练习资料
-        └── data/
-            └── chunks.json  # 带来源和编号的片段列表
+    ├── day08/
+    │   ├── main.py           # 人工指定片段的独立资料问答
+    │   ├── document_loader.py # 读取文本、生成片段并保存
+    │   ├── text_splitter.py  # 400/80 切分与 JSON 加载
+    │   ├── model_client.py   # 复用模型调用
+    │   ├── docs/             # 三份 UTF-8 练习资料
+    │   └── data/
+    │       └── chunks.json   # 第八天片段列表
+    └── day09/
+        ├── document_loader.py # 多文档处理、短段落合并和来源范围
+        ├── text_splitter.py   # 可配置长度与重叠量、JSON 读写
+        ├── check_questions.py # 读取评估题并统计题型
+        ├── checks.md          # 逐块核对和最终检查记录
+        ├── docs/              # 三份资料与两份长段落测试文档
+        ├── data/
+        │   └── chunks.json    # 第九天正式分块输出
+        └── evaluation/
+            ├── questions.json # 20 道带答案与来源的评估题
+            └── README.md      # 评估题字段和使用说明
 ```
 
 ## 学习进度
@@ -41,6 +54,8 @@ study/
 | 第六天 | 功能检查、依赖清单、新环境复现、增加帮助命令和整理说明 |
 | 第七天 | 补漏、项目演示和阶段复盘，不新增必需功能 |
 | 第八天 | 本地文档读取、400/80 字符切分、片段来源、JSON 保存与人工选片段问答 |
+| 第九天 | 按段落合并与切分、来源段落范围、相对路径、批量保存、参数检查及 20 道评估题 |
+| 第十天 | SiliconFlow 向量化、Chroma 本地索引、批量问题检索与来源检查 |
 
 ## 环境与依赖
 
@@ -76,6 +91,8 @@ python pyproject/day05/main.py
 python pyproject/day06/main.py
 python pyproject/day08/document_loader.py
 python pyproject/day08/main.py
+python pyproject/day09/document_loader.py
+python pyproject/day09/check_questions.py
 ```
 
 也可以在 PyCharm 中选择对应的 `main.py` 运行。第四至六天及第八天均需先配置 `DEEPSEEK_API_KEY`。当前聊天助手使用第六天版本，第四天保留为单轮问答练习。
@@ -282,3 +299,87 @@ python pyproject/day08/main.py
 读取、切分、JSON 保存和请求组织已做模拟检查；上述五道问答另有真实响应。五题通过仅表示这些案例符合预期。当前仍采用人工指定片段，没有自动检索；固定字符切分也不保证完整语义。
 
 当前 JSON 加载函数捕获 OSError，但未完整校验 JSON 损坏、编码错误及记录结构。Git 提交状态以实际仓库为准，不因文档更新就视为已经提交。
+
+
+## 第九天 文档分块与来源追踪
+
+本阶段整理文档分块和来源记录，并准备后续检索问答的评估题。代码使用 Python 标准库，没有调用模型、embedding 服务或向量数据库。
+
+### 运行与重新生成
+
+在本 README 所在的 `study` 目录运行：
+
+```bash
+python pyproject/day09/document_loader.py
+python pyproject/day09/check_questions.py
+```
+
+生成入口递归读取脚本同目录 `docs/` 下的 `.txt` 文件，并排序后逐份处理。输入和输出位置以脚本所在目录为基准。修改资料后重新运行生成入口，会覆盖 `pyproject/day09/data/chunks.json`。保存前使用 `path_save.parent.mkdir(parents=True, exist_ok=True)` 创建缺失的输出目录；目录已有时可以继续运行。
+
+`load()` 读取 UTF-8 正文；`process_document(content, source, chunks_size=400, overlap=80)` 返回一份文档的片段列表；`main()` 汇总所有文档，统一保存。读取失败或正文为空时，该文档处理结果为空列表，其他文件继续处理。题型统计入口单独读取 `evaluation/questions.json`。
+
+### 分块规则
+
+- 按两个连续换行 `\n\n` 识别段落，过滤纯空白段；段落内部的单个换行保留。
+- 有效原文段落从 1 开始编号。相邻短段落用两个换行连接，合并后的总字符数包含这两个换行，不能超过片段上限。
+- 单段自身超过上限时，先保存此前积攒的短段落，再单独切分该长段落。拆出的各块都保留同一个原文段落编号。
+- 默认上限为 400 字符、长段落重叠 80 字符，滑动步长为 320。普通段落合并边界不强制增加重叠。
+- 最后不足上限的内容保留，到达正文末尾即停止。字符数使用 Python 字符串长度，不是字节数或 token 数。
+- 长度参数必须大于 0，重叠参数必须满足 `0 <= overlap < chunks_size`，不符合时抛出 `ValueError`。
+- 两个处理函数均支持自定义参数；批量生成入口当前明确使用 `400, 80`，作为检查和题目引用的基准。
+
+### 当前 JSON 格式
+
+`data/chunks.json` 顶层是列表，每项为一个片段字典。第九天当前使用的字段名称如下；它与第八天的 `source/chunk_id/text` 命名不同，编写后续读取代码时按实际字段取值。
+
+| 字段 | 含义 |
+|---|---|
+| 文件名 | 相对于 docs 的来源路径，使用 `/` 分隔，例如 `Python/笔记.txt` |
+| 序号 | 来源路径加文件内连续编号，例如 `Python/笔记.txt#1` |
+| location.paragraph_start | 当前片段包含的第一个有效原文段落编号，整数 |
+| location.paragraph_end | 当前片段包含的最后一个有效原文段落编号，整数 |
+| 内容 | 当前片段正文 |
+
+来源使用 `relative_to(...).as_posix()` 保留子目录信息，以区分不同目录下的同名文件。片段编号与来源范围含义不同：一个长段落拆成多块时，片段编号不同，原文段落范围相同。
+
+当前五份文件生成 11 块：
+
+| 文件 | 片段数 | 各块字符数 |
+|---|---:|---|
+| 使用说明.txt | 1 | 286 |
+| 学习笔记.txt | 4 | 334、384、349、296 |
+| 短长混合测试.txt | 3 | 81、400、180 |
+| 长段落测试.txt | 2 | 400、180 |
+| 项目介绍.txt | 1 | 304 |
+
+### 评估题与检查结果
+
+`evaluation/questions.json` 共 20 题：12 道单文档题、4 道多文档题、4 道资料不足题。每题记录参考答案、原文位置、对应片段编号和证据摘录。字段说明见 `evaluation/README.md`；运行统计入口应显示总计 20 题，三类分别为 12、4、4。
+
+2026-10-28 完成全部 11 块的来源与正文核对，并验证默认和自定义切分参数、空输入、读取失败、长度边界、长短交替及不合法参数。在临时目录运行真实读取、处理和保存流程，验证了首次创建 data 目录、重复运行结果一致、空白文件跳过和子目录同名文件区分。检查过程没有调用模型，也没有改动原代码、原文或原 JSON；记录见 `pyproject/day09/checks.md`。
+
+长段落仍按字符位置切分，可能在词语中间截开；短段落按段落边界合并，也可能把说明和后续示例分到不同片段。重叠不保证每块能独立表达完整意思。《学习笔记》描述的是第八天实现，不能把其中的历史行为当作第九天当前配置。
+
+这些检查确认的是本地分块、来源记录、题集结构和引用，不是自动检索或模型问答的评估得分。Git 提交和推送仍以实际操作结果为准。
+
+
+## 第十天 向量化与检索
+
+读取第九天 `pyproject/day09/data/chunks.json`，通过 SiliconFlow 的 `BAAI/bge-m3` 生成 1024 维向量，使用 Chroma 保存正文、编号、向量和来源段落。查询时问题使用同一模型向量化，返回每个问题距离最近的 3 条记录。当前集合使用 L2 距离，距离越小表示向量越接近；距离不代表答案正确的概率。
+
+本阶段使用 Python 3.12，安装依赖（在 `study` 目录下）：
+
+```bash
+python -m pip install -r pyproject/day10/requirements.txt
+```
+
+在运行环境中配置 `SILICONFLOW_API_KEY`，例如在 PyCharm 当前脚本的运行配置中设置。密钥从环境变量读取，运行配置里的变量不会自动传给其他终端；向量接口可能有费用或额度限制。
+
+```bash
+python pyproject/day10/build_index.py
+python pyproject/day10/retriever.py
+```
+
+首次先运行建库脚本；检索脚本接收多个问题，每行一个，空行结束输入。数据以脚本位置为基准保存在 `pyproject/day10/chroma_db/`，属于本地生成文件，已加入忽略规则。第九天数据必须存在，若资料、分块规则或向量模型发生变化，应重新生成分块并重建索引；`upsert` 只新增或更新传入编号，不会删除已经不存在的旧编号。重建前自行确认是否需要备份本地索引。
+
+调用方传入问题字符串列表，例如单个问题使用 `["怎么保存聊天记录？"]`，`retrieve(questions, top_k=3)` 返回按问题分组的 Chroma 结果；向量生成失败或没有可用索引时返回 `None`。当前索引包含 11 条；五道单文档题在前 3 条中均找到正确片段，其中一题排名第 3。检查范围和真实/模拟测试的区别见 `pyproject/day10/checks.md`，不能据此推断整体准确率。当前尚未将检索结果自动交给聊天模型。
