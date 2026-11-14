@@ -18,3 +18,7 @@ chat_history.json
 
 # 本地向量索引，可由文档重新生成
 chroma_db/
+
+# 第十一天本地问答记录（可能包含私人提问）
+study/pyproject/day11/data/qa_history.json
+study/pyproject/day11/data/.qa_history_*.tmp
