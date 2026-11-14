@@ -1,0 +1,550 @@
+[
+    {
+        "id": "Q01",
+        "type": "single_source",
+        "answerable": true,
+        "question": "根据使用说明，输入 /clear 会清除什么、保留什么？会删除已经保存的历史文件吗？",
+        "reference_answer": "/clear 清空内存中的聊天历史并保留系统要求，不会删除已经保存的历史文件。",
+        "sources": [
+            {
+                "source": "使用说明.txt",
+                "location": {
+                    "paragraph_start": 1,
+                    "paragraph_end": 1
+                }
+            }
+        ],
+        "chunk_ids": [
+            "使用说明.txt#1"
+        ],
+        "evidence": [
+            {
+                "source": "使用说明.txt",
+                "paragraph_id": 1,
+                "quote": "输入 /clear 清空内存中的聊天历史并保留系统要求"
+            },
+            {
+                "source": "使用说明.txt",
+                "paragraph_id": 1,
+                "quote": "/clear 不会删除已保存的文件"
+            }
+        ]
+    },
+    {
+        "id": "Q02",
+        "type": "single_source",
+        "answerable": true,
+        "question": "根据使用说明，运行 day06/main.py 后执行 /save，历史保存到哪里？采用什么编码，是否覆盖原文件？",
+        "reference_answer": "保存到 day06 目录下的 chat_history.json，采用 UTF-8 编码，并覆盖原文件。",
+        "sources": [
+            {
+                "source": "使用说明.txt",
+                "location": {
+                    "paragraph_start": 1,
+                    "paragraph_end": 1
+                }
+            }
+        ],
+        "chunk_ids": [
+            "使用说明.txt#1"
+        ],
+        "evidence": [
+            {
+                "source": "使用说明.txt",
+                "paragraph_id": 1,
+                "quote": "保存到 day06 目录下的 chat_history.json，包含系统消息，使用 UTF-8 编码并覆盖原文件"
+            }
+        ]
+    },
+    {
+        "id": "Q03",
+        "type": "single_source",
+        "answerable": true,
+        "question": "根据使用说明，退出程序会自动保存历史吗？再次启动会自动读取历史文件吗？",
+        "reference_answer": "退出不会自动保存，再次启动也不会自动读取该历史文件。",
+        "sources": [
+            {
+                "source": "使用说明.txt",
+                "location": {
+                    "paragraph_start": 1,
+                    "paragraph_end": 1
+                }
+            }
+        ],
+        "chunk_ids": [
+            "使用说明.txt#1"
+        ],
+        "evidence": [
+            {
+                "source": "使用说明.txt",
+                "paragraph_id": 1,
+                "quote": "退出不会自动保存，启动时也不会自动读取该文件"
+            }
+        ]
+    },
+    {
+        "id": "Q04",
+        "type": "single_source",
+        "answerable": true,
+        "question": "根据使用说明，每轮回答成功后最多保留多少轮问答、多少条消息？请求失败的问题如何处理？",
+        "reference_answer": "最多保留最近五轮完整问答和一条系统消息，共十一条消息；失败的问题会从历史中移除。",
+        "sources": [
+            {
+                "source": "使用说明.txt",
+                "location": {
+                    "paragraph_start": 1,
+                    "paragraph_end": 1
+                }
+            }
+        ],
+        "chunk_ids": [
+            "使用说明.txt#1"
+        ],
+        "evidence": [
+            {
+                "source": "使用说明.txt",
+                "paragraph_id": 1,
+                "quote": "最多保留最近五轮完整问答和一条系统消息，共十一条消息；失败的问题会从历史中移除"
+            }
+        ]
+    },
+    {
+        "id": "Q05",
+        "type": "single_source",
+        "answerable": true,
+        "question": "项目介绍中描述的 day06 助手使用哪家模型服务、通过什么 SDK 调用？密钥从哪个环境变量读取？",
+        "reference_answer": "使用 DeepSeek 模型服务，通过 OpenAI Python SDK 调用，密钥从 DEEPSEEK_API_KEY 环境变量读取。",
+        "sources": [
+            {
+                "source": "项目介绍.txt",
+                "location": {
+                    "paragraph_start": 1,
+                    "paragraph_end": 1
+                }
+            }
+        ],
+        "chunk_ids": [
+            "项目介绍.txt#1"
+        ],
+        "evidence": [
+            {
+                "source": "项目介绍.txt",
+                "paragraph_id": 1,
+                "quote": "day06 版本是 DeepSeek 命令行聊天助手，通过 OpenAI Python SDK 调用模型"
+            },
+            {
+                "source": "项目介绍.txt",
+                "paragraph_id": 1,
+                "quote": "API 密钥从 DEEPSEEK_API_KEY 环境变量读取"
+            }
+        ]
+    },
+    {
+        "id": "Q06",
+        "type": "single_source",
+        "answerable": true,
+        "question": "根据项目介绍，输入与历史管理、模型调用、JSON 保存是怎样分工的？",
+        "reference_answer": "输入与历史管理、模型调用和 JSON 保存分别由独立模块负责。",
+        "sources": [
+            {
+                "source": "项目介绍.txt",
+                "location": {
+                    "paragraph_start": 1,
+                    "paragraph_end": 1
+                }
+            }
+        ],
+        "chunk_ids": [
+            "项目介绍.txt#1"
+        ],
+        "evidence": [
+            {
+                "source": "项目介绍.txt",
+                "paragraph_id": 1,
+                "quote": "输入与历史管理、模型调用、JSON 保存分别由独立模块负责"
+            }
+        ]
+    },
+    {
+        "id": "Q07",
+        "type": "single_source",
+        "answerable": true,
+        "question": "根据第八天学习笔记，生成片段文件就表示完成了知识库问答吗？笔记当时还没有实现什么？",
+        "reference_answer": "不表示。笔记当时还没有实现自动检索，也没有把片段自动交给模型，后续需要先手动选择相关片段检查回答。",
+        "sources": [
+            {
+                "source": "学习笔记.txt",
+                "location": {
+                    "paragraph_start": 2,
+                    "paragraph_end": 2
+                }
+            }
+        ],
+        "chunk_ids": [
+            "学习笔记.txt#1"
+        ],
+        "evidence": [
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 2,
+                "quote": "还没有实现自动检索，也没有把片段自动交给模型"
+            },
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 2,
+                "quote": "生成片段文件并不代表已经完成知识库问答"
+            }
+        ]
+    },
+    {
+        "id": "Q08",
+        "type": "single_source",
+        "answerable": true,
+        "question": "根据第八天学习笔记，exists 为什么不能代替 is_dir？文档目录以什么位置为基准寻找？",
+        "reference_answer": "exists 只能说明路径存在，普通文件也可能存在；is_dir 用于判断是否为目录。文档目录以加载脚本所在目录为基准寻找。",
+        "sources": [
+            {
+                "source": "学习笔记.txt",
+                "location": {
+                    "paragraph_start": 3,
+                    "paragraph_end": 3
+                }
+            }
+        ],
+        "chunk_ids": [
+            "学习笔记.txt#1"
+        ],
+        "evidence": [
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 3,
+                "quote": "程序以加载脚本所在目录为基准寻找 docs"
+            },
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 3,
+                "quote": "exists 只能说明路径存在，普通文件也可能存在，不能代替目录判断"
+            }
+        ]
+    },
+    {
+        "id": "Q09",
+        "type": "single_source",
+        "answerable": true,
+        "question": "根据第八天学习笔记，读取函数失败后可能返回什么？为什么调用方要先检查它，再判断正文是否只有空白？",
+        "reference_answer": "读取失败、没有返回正文时，调用方得到 None。先检查 None，可以避免对 None 调用字符串方法，然后才能判断正文是否只有空白。",
+        "sources": [
+            {
+                "source": "学习笔记.txt",
+                "location": {
+                    "paragraph_start": 4,
+                    "paragraph_end": 4
+                }
+            }
+        ],
+        "chunk_ids": [
+            "学习笔记.txt#2"
+        ],
+        "evidence": [
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 4,
+                "quote": "没有返回正文，调用方会得到 None"
+            },
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 4,
+                "quote": "调用方先检查 None，再判断正文是否只有空白，避免对 None 调用字符串方法"
+            }
+        ]
+    },
+    {
+        "id": "Q10",
+        "type": "single_source",
+        "answerable": true,
+        "question": "根据第八天学习笔记，固定字符切分的上限和重叠量分别是多少，下一块起点前进多少？这些数字的单位是什么？",
+        "reference_answer": "上限为 400 字符，重叠 80 字符，下一块起点前进 320 字符；单位是 Python 字符串字符数，不是 UTF-8 字节数或模型 token 数。",
+        "sources": [
+            {
+                "source": "学习笔记.txt",
+                "location": {
+                    "paragraph_start": 5,
+                    "paragraph_end": 5
+                }
+            }
+        ],
+        "chunk_ids": [
+            "学习笔记.txt#2"
+        ],
+        "evidence": [
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 5,
+                "quote": "每个片段最多 400 个字符，相邻片段重叠 80 个字符，因此下一段的起点前进 320"
+            },
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 5,
+                "quote": "这里统计的是字符串字符数，不是 UTF-8 字节数，也不是模型的 token 数"
+            }
+        ]
+    },
+    {
+        "id": "Q11",
+        "type": "single_source",
+        "answerable": true,
+        "question": "第八天学习笔记中的 850 字符固定切分示例会生成几块？各块长度和起点分别是多少？",
+        "reference_answer": "生成三块，长度依次是 400、400、210；起点依次是 0、320、640。",
+        "sources": [
+            {
+                "source": "学习笔记.txt",
+                "location": {
+                    "paragraph_start": 6,
+                    "paragraph_end": 6
+                }
+            }
+        ],
+        "chunk_ids": [
+            "学习笔记.txt#3"
+        ],
+        "evidence": [
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 6,
+                "quote": "850 字符的正文会分成三块，长度依次为 400、400、210"
+            },
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 6,
+                "quote": "第一块从位置 0 开始，第二块从 320 开始，第三块从 640 开始"
+            }
+        ]
+    },
+    {
+        "id": "Q12",
+        "type": "single_source",
+        "answerable": true,
+        "question": "根据学习笔记，依据片段回答时，资料没有提供的信息应该怎样处理？来源编号能代替正文核对吗？",
+        "reference_answer": "应说明资料不足，不把猜测当成项目功能。来源编号只是帮助核对依据，不能代替对正文内容的检查。",
+        "sources": [
+            {
+                "source": "学习笔记.txt",
+                "location": {
+                    "paragraph_start": 9,
+                    "paragraph_end": 9
+                }
+            }
+        ],
+        "chunk_ids": [
+            "学习笔记.txt#4"
+        ],
+        "evidence": [
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 9,
+                "quote": "资料没有提供的信息应说明资料不足，不把猜测当成项目功能"
+            },
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 9,
+                "quote": "来源编号用于帮助核对依据，不能代替对正文内容的检查"
+            }
+        ]
+    },
+    {
+        "id": "Q13",
+        "type": "multi_source",
+        "answerable": true,
+        "question": "结合项目介绍和使用说明，day06 助手的 API 密钥从哪个环境变量读取？聊天后执行 /save，历史保存到哪里？",
+        "reference_answer": "密钥从 DEEPSEEK_API_KEY 环境变量读取；/save 将历史保存到 day06 目录下的 chat_history.json。",
+        "sources": [
+            {
+                "source": "项目介绍.txt",
+                "location": {
+                    "paragraph_start": 1,
+                    "paragraph_end": 1
+                }
+            },
+            {
+                "source": "使用说明.txt",
+                "location": {
+                    "paragraph_start": 1,
+                    "paragraph_end": 1
+                }
+            }
+        ],
+        "chunk_ids": [
+            "项目介绍.txt#1",
+            "使用说明.txt#1"
+        ],
+        "evidence": [
+            {
+                "source": "项目介绍.txt",
+                "paragraph_id": 1,
+                "quote": "API 密钥从 DEEPSEEK_API_KEY 环境变量读取"
+            },
+            {
+                "source": "使用说明.txt",
+                "paragraph_id": 1,
+                "quote": "保存到 day06 目录下的 chat_history.json"
+            }
+        ]
+    },
+    {
+        "id": "Q14",
+        "type": "multi_source",
+        "answerable": true,
+        "question": "结合项目介绍和使用说明，模型调用与 JSON 保存是否由独立模块负责？执行 /save 时，已经裁剪掉的早期问答还会被保存吗？",
+        "reference_answer": "模型调用和 JSON 保存分别由独立模块负责；/save 保存当前保留的消息，已经裁剪的早期问答不会出现在保存文件中。",
+        "sources": [
+            {
+                "source": "项目介绍.txt",
+                "location": {
+                    "paragraph_start": 1,
+                    "paragraph_end": 1
+                }
+            },
+            {
+                "source": "使用说明.txt",
+                "location": {
+                    "paragraph_start": 1,
+                    "paragraph_end": 1
+                }
+            }
+        ],
+        "chunk_ids": [
+            "项目介绍.txt#1",
+            "使用说明.txt#1"
+        ],
+        "evidence": [
+            {
+                "source": "项目介绍.txt",
+                "paragraph_id": 1,
+                "quote": "输入与历史管理、模型调用、JSON 保存分别由独立模块负责"
+            },
+            {
+                "source": "使用说明.txt",
+                "paragraph_id": 1,
+                "quote": "已裁剪的早期问答不会出现在后续保存的文件中"
+            }
+        ]
+    },
+    {
+        "id": "Q15",
+        "type": "multi_source",
+        "answerable": true,
+        "question": "结合项目介绍和第八天学习笔记，day06 助手通过什么 SDK 调用哪家模型服务？为什么第八天生成片段文件仍不能称为完成自动知识库问答？",
+        "reference_answer": "day06 助手通过 OpenAI Python SDK 调用 DeepSeek；第八天笔记当时还没有自动检索，也没有自动把片段交给模型，所以生成片段文件不足以表示完成自动知识库问答。",
+        "sources": [
+            {
+                "source": "项目介绍.txt",
+                "location": {
+                    "paragraph_start": 1,
+                    "paragraph_end": 1
+                }
+            },
+            {
+                "source": "学习笔记.txt",
+                "location": {
+                    "paragraph_start": 2,
+                    "paragraph_end": 2
+                }
+            }
+        ],
+        "chunk_ids": [
+            "项目介绍.txt#1",
+            "学习笔记.txt#1"
+        ],
+        "evidence": [
+            {
+                "source": "项目介绍.txt",
+                "paragraph_id": 1,
+                "quote": "day06 版本是 DeepSeek 命令行聊天助手，通过 OpenAI Python SDK 调用模型"
+            },
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 2,
+                "quote": "还没有实现自动检索，也没有把片段自动交给模型"
+            }
+        ]
+    },
+    {
+        "id": "Q16",
+        "type": "multi_source",
+        "answerable": true,
+        "question": "结合使用说明和第八天学习笔记，day06 手动保存历史的文件名是什么、是否包含系统消息？文档读取返回 None 时，为什么不能直接对返回值调用 strip？",
+        "reference_answer": "手动保存的文件名为 chat_history.json，包含系统消息；读取返回 None 时，它不是正文字符串，需要先检查 None，避免直接调用字符串方法。",
+        "sources": [
+            {
+                "source": "使用说明.txt",
+                "location": {
+                    "paragraph_start": 1,
+                    "paragraph_end": 1
+                }
+            },
+            {
+                "source": "学习笔记.txt",
+                "location": {
+                    "paragraph_start": 4,
+                    "paragraph_end": 4
+                }
+            }
+        ],
+        "chunk_ids": [
+            "使用说明.txt#1",
+            "学习笔记.txt#2"
+        ],
+        "evidence": [
+            {
+                "source": "使用说明.txt",
+                "paragraph_id": 1,
+                "quote": "chat_history.json，包含系统消息"
+            },
+            {
+                "source": "学习笔记.txt",
+                "paragraph_id": 4,
+                "quote": "调用方先检查 None，再判断正文是否只有空白，避免对 None 调用字符串方法"
+            }
+        ]
+    },
+    {
+        "id": "Q17",
+        "type": "unanswerable",
+        "answerable": false,
+        "question": "根据现有资料，这个项目最终选用的向量数据库具体叫什么，版本号是多少？",
+        "reference_answer": "资料未提供向量数据库的具体名称和版本，无法确定。",
+        "sources": [],
+        "chunk_ids": [],
+        "evidence": []
+    },
+    {
+        "id": "Q18",
+        "type": "unanswerable",
+        "answerable": false,
+        "question": "根据现有资料，这个项目最终使用的 embedding 模型名称和向量维度分别是多少？",
+        "reference_answer": "资料未提供 embedding 模型名称和向量维度，无法确定。",
+        "sources": [],
+        "chunk_ids": [],
+        "evidence": []
+    },
+    {
+        "id": "Q19",
+        "type": "unanswerable",
+        "answerable": false,
+        "question": "根据现有资料，这个项目部署到公网后的访问域名和服务端口分别是什么？",
+        "reference_answer": "资料未提供公网访问域名和服务端口，无法确定。",
+        "sources": [],
+        "chunk_ids": [],
+        "evidence": []
+    },
+    {
+        "id": "Q20",
+        "type": "unanswerable",
+        "answerable": false,
+        "question": "根据现有资料，这个项目经过压测后支持的最大同时在线用户数是多少？",
+        "reference_answer": "资料未提供并发压测结果或最大同时在线用户数，无法确定。",
+        "sources": [],
+        "chunk_ids": [],
+        "evidence": []
+    }
+]
