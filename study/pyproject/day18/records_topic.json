@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "topic": "Python",
+        "study_minutes": 55,
+        "study_date": "2026-11-14",
+        "notes": "复习函数"
+    },
+    {
+        "id": 3,
+        "topic": "Python",
+        "study_minutes": 60,
+        "study_date": "2026-11-13",
+        "notes": "练习列表和字典"
+    },
+    {
+        "id": 4,
+        "topic": "Python",
+        "study_minutes": 40,
+        "study_date": "2026-11-14",
+        "notes": null
+    },
+    {
+        "id": 10,
+        "topic": "Python",
+        "study_minutes": 30,
+        "study_date": "2026-11-12",
+        "notes": "复习函数"
+    }
+]
