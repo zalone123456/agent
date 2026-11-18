@@ -84,3 +84,8 @@ key in dictionary 默认检查的是键，与 key in dictionary.keys() 效果相
 dict.fromkeys()：去重并保留顺序
 dict.fromkeys(citations) 会把列表里的元素作为字典的键，重复元素只保留一次，并保留首次出现的顺序。
 例如 ["S2", "S1", "S2"] 去重后的顺序是 S2、S1。它解决的是编号去重和顺序，字符串需要换行时仍要另加 \n。
+
+  ########第十八天，遇到的问题有
+for...else：循环正常结束时执行 else；遇到 break 则不执行。
+日期转换：`date.fromisoformat()` 将日期字符串转为 date 对象；`.isoformat()` 将 date 对象转为字符串。
+JSON 保存：`json.dump(data, f, ensure_ascii=False, indent=4)` 中，`ensure_ascii=False` 让中文直接显示，`indent=4` 设置缩进，方便阅读。
